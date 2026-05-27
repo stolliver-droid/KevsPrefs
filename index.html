@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kevin — Aged to Perfection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #FBF5ED; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    const STEPS = ["welcome","dinner11","breakfast13","activities13","dinner13","breakfast14","cookin","summary"];
+
+    const DATA = {
+      dinner11: {
+        title: "Arrival Dinner", date: "Wednesday, June 11", emoji: "🍽",
+        subtitle: "First meal of the trip — vote for your pick", type: "single",
+        options: [
+          { id: "wheated",     name: "Wheated",       tag: "~2 min walk",         note: "Brooklyn-style pizza, seasonal cocktails" },
+          { id: "hammerheads", name: "Hammerheads",   tag: "~1 mi / 5 min drive", note: "Creative burgers, smoked wings, elk burger" },
+          { id: "eagle",       name: "The Eagle",     tag: "~0.5 mi walk",        note: "Southern fried chicken, pork burnt ends, mac & cheese" },
+          { id: "holygrale",   name: "Holy Grale",    tag: "~0.7 mi walk",        note: "Craft beer bar inside a converted church" },
+        ],
+      },
+      breakfast13: {
+        title: "Birthday Morning Breakfast", date: "Friday, June 13", emoji: "☀️",
+        subtitle: "Your birthday — your call on where we start", type: "single",
+        options: [
+          { id: "conhuevos",  name: "Con Huevos!",      tag: "~10 min drive",  note: "Mexican-inspired, Cuban coffee, breakfast margaritas" },
+          { id: "gralehaus",  name: "Gralehaus",         tag: "~0.7 mi walk",  note: "Mushroom grits, biscuits with duck gravy, great espresso" },
+          { id: "highland13", name: "Highland Morning",  tag: "~1 mi walk",    note: "Retro diner, creative pancakes & benedicts" },
+        ],
+      },
+      activities13: {
+        title: "Free Time Activities", date: "Friday, June 13", emoji: "🎶",
+        subtitle: "Pick everything that sounds good — we'll mix and match", type: "multi",
+        groups: [
+          { label: "📀  Record Shops", options: [
+            { id: "guestroom",   name: "Guestroom Records",          tag: "~2 min walk",      note: "Best record store in Kentucky, inside a historic fire station" },
+            { id: "betterdays",  name: "Better Days Records",        tag: "~15 min walk",     note: "New & used vinyl across all genres, knowledgeable staff" },
+            { id: "mattanthony", name: "Matt Anthony's Record Shop", tag: "~5 min drive",     note: "Staff plays any record for you before you buy" },
+          ]},
+          { label: "🎸  Instrument Shops", options: [
+            { id: "momsmusic",   name: "Mom's Music",                tag: "~10 min drive",   note: "Louisville's top-rated instrument store (4.9 ★) — guitars, keys, amps" },
+          ]},
+          { label: "🏙  Neighborhoods & Areas", options: [
+            { id: "nulu",        name: "NuLu / East Market Street",  tag: "~10 min drive",   note: "Louisville arts district — galleries, boutiques, murals, rooftop bars" },
+            { id: "butchertown", name: "Butchertown Market",         tag: "~10 min drive",   note: "Historic building full of local vendors, artisan goods & bourbon gifts" },
+            { id: "cherokee",    name: "Cherokee Park",              tag: "~15 min walk",    note: "Olmsted-designed park, 2.4-mile loop, wooded trails, creek swimming" },
+            { id: "bardstown",   name: "Bardstown Rd Stroll",        tag: "Right outside",   note: "Shops, records, coffee, bars — the heart of the Highlands" },
+            { id: "rooftop",     name: "Rooftop Bars (NuLu)",        tag: "~10–15 min drive",note: "Copper & Kings, Bar Genevieve, or Rooftop Bourré Bonne" },
+          ]},
+        ],
+      },
+      dinner13: {
+        title: "Birthday Dinner", date: "Friday, June 13", emoji: "🥃",
+        subtitle: "The marquee meal — your birthday, your pick", type: "single",
+        options: [
+          { id: "jackfrys", name: "Jack Fry's",        tag: "~0.5 mi walk",  note: "Louisville institution since 1933, bourbon short ribs, live jazz" },
+          { id: "mag610",   name: "610 Magnolia",      tag: "~10 min drive", note: "Chef-driven tasting menu, bourbon-inspired desserts — most upscale" },
+          { id: "bucks",    name: "Buck's Restaurant", tag: "~10 min drive", note: "Victorian mansion, upscale Kentucky dining, live piano" },
+          { id: "proof",    name: "Proof on Main",     tag: "~15 min drive", note: "21c Museum Hotel on Whiskey Row — art gallery + legendary beef tartare" },
+        ],
+      },
+      breakfast14: {
+        title: "Departure Breakfast", date: "Saturday, June 14", emoji: "🌅",
+        subtitle: "Last meal before the drive home", type: "single",
+        options: [
+          { id: "morningfork", name: "Morning Fork",     tag: "~10 min drive", note: "Opens 7 AM — short rib eggs benedict, housemade corned beef hash" },
+          { id: "breakfastaf", name: "Breakfast AF",     tag: "~10 min drive", note: "Opens 7:30 AM — fast counter-service, chicken & waffles, Vietnamese coffee" },
+          { id: "highland14",  name: "Highland Morning", tag: "~1 mi walk",    note: "Opens 8 AM — retro diner, creative pancakes & benedicts" },
+          { id: "gralehaus14", name: "Gralehaus",        tag: "~0.7 mi walk",  note: "Opens 9 AM — best if we're not rushing out" },
+        ],
+      },
+    };
+
+    const COOKIN = [
+      { id: "breakfast12", label: "Thursday Breakfast (June 12)", hint: "e.g. eggs & bacon, bagels, overnight oats..." },
+      { id: "dinner12",    label: "Thursday Dinner (June 12)",    hint: "After the distillery — what are you craving?" },
+      { id: "lunch13",     label: "Friday Lunch (June 13)",       hint: "Sandwich day — any special requests?" },
+    ];
+
+    function App() {
+      const [step, setStep]       = useState(0);
+      const [picks, setPicks]     = useState({});
+      const [cookin, setCookin]   = useState({});
+      const [copied, setCopied]   = useState(false);
+      const [animDir, setAnimDir] = useState("forward");
+      const [visible, setVisible] = useState(true);
+
+      const navigate = (dir) => {
+        setAnimDir(dir > 0 ? "forward" : "back");
+        setVisible(false);
+        setTimeout(() => { setStep(s => s + dir); setVisible(true); }, 180);
+      };
+
+      const togglePick = (key, id, type) => {
+        setPicks(prev => {
+          if (type === "single") return { ...prev, [key]: id };
+          const cur = prev[key] || [];
+          return { ...prev, [key]: cur.includes(id) ? cur.filter(x => x !== id) : [...cur, id] };
+        });
+      };
+
+      const isSelected = (key, id) => {
+        const v = picks[key];
+        return Array.isArray(v) ? v.includes(id) : v === id;
+      };
+
+      const buildSummary = () => {
+        const lines = ["Kevin's Picks — Aged to Perfection\nJune 11–14, 2026 · Louisville, KY\n"];
+        const labels = { dinner11:"June 11 Dinner", breakfast13:"June 13 Breakfast", activities13:"June 13 Activities", dinner13:"June 13 Birthday Dinner", breakfast14:"June 14 Breakfast" };
+        Object.entries(labels).forEach(([k, label]) => {
+          const v = picks[k];
+          if (!v || (Array.isArray(v) && !v.length)) { lines.push(`${label}: No pick yet`); return; }
+          if (Array.isArray(v)) {
+            const all = DATA[k].groups.flatMap(g => g.options);
+            lines.push(`${label}: ${v.map(id => all.find(o => o.id === id)?.name).filter(Boolean).join(", ")}`);
+          } else {
+            lines.push(`${label}: ${DATA[k].options.find(o => o.id === v)?.name || v}`);
+          }
+        });
+        lines.push("\nCook-In Preferences:");
+        COOKIN.forEach(m => lines.push(`${m.label}: ${cookin[m.id] || "(no preference)"}`));
+        return lines.join("\n");
+      };
+
+      const copySummary = () => {
+        navigator.clipboard.writeText(buildSummary()).then(() => {
+          setCopied(true); setTimeout(() => setCopied(false), 2500);
+        });
+      };
+
+      const stepKey = STEPS[step];
+      const current = DATA[stepKey];
+      const progress = step / (STEPS.length - 1);
+
+      const s = {
+        app:         { fontFamily:"'DM Sans',sans-serif", background:"#FBF5ED", minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center" },
+        inner:       { width:"100%", maxWidth:520, display:"flex", flexDirection:"column", minHeight:"100vh" },
+        progressBar: { height:3, background:"#E8DDD0", width:"100%", position:"sticky", top:0, zIndex:10 },
+        progressFill:{ height:"100%", background:"#8B4513", width:`${progress*100}%`, transition:"width 0.4s ease" },
+        header:      { padding:"20px 20px 0", textAlign:"center" },
+        dateChip:    { display:"inline-block", background:"#8B4513", color:"#FFF8F0", fontSize:11, fontWeight:600, letterSpacing:"0.08em", padding:"4px 12px", borderRadius:20, marginBottom:8, textTransform:"uppercase" },
+        title:       { fontFamily:"'Cormorant Garamond',serif", fontSize:26, fontWeight:700, color:"#1E0A04", margin:"4px 0 6px", lineHeight:1.2 },
+        subtitle:    { fontSize:13, color:"#8A6550", margin:"0 0 20px", lineHeight:1.5 },
+        content:     { flex:1, padding:"0 16px 100px", transition: visible?"opacity 0.2s ease, transform 0.2s ease":"none", opacity:visible?1:0, transform:visible?"translateY(0)":animDir==="forward"?"translateY(8px)":"translateY(-8px)" },
+        groupLabel:  { fontSize:11, fontWeight:600, color:"#8B4513", letterSpacing:"0.1em", textTransform:"uppercase", margin:"20px 0 8px 2px" },
+        card:  sel  => ({ background:sel?"#FFF0E0":"#FFFFFF", border:`2px solid ${sel?"#8B4513":"#EDE0D4"}`, borderRadius:14, padding:"14px 16px", marginBottom:10, cursor:"pointer", transition:"all 0.15s ease", boxShadow:sel?"0 2px 12px rgba(139,69,19,0.15)":"0 1px 4px rgba(0,0,0,0.05)" }),
+        cardRow:     { display:"flex", alignItems:"flex-start", gap:12 },
+        radio: sel  => ({ width:20, height:20, borderRadius:"50%", border:`2px solid ${sel?"#8B4513":"#CCC"}`, background:sel?"#8B4513":"#FFF", flexShrink:0, marginTop:2, display:"flex", alignItems:"center", justifyContent:"center" }),
+        checkbox:sel => ({ width:20, height:20, borderRadius:6, border:`2px solid ${sel?"#8B4513":"#CCC"}`, background:sel?"#8B4513":"#FFF", flexShrink:0, marginTop:2, display:"flex", alignItems:"center", justifyContent:"center" }),
+        checkmark:   { color:"#FFF", fontSize:12, fontWeight:700 },
+        cardName:    { fontSize:16, fontWeight:600, color:"#1E0A04", marginBottom:3 },
+        cardTag:     { fontSize:12, color:"#8B4513", fontWeight:500, marginBottom:2 },
+        cardNote:    { fontSize:12, color:"#8A6550", lineHeight:1.4 },
+        nav:         { position:"fixed", bottom:0, left:"50%", transform:"translateX(-50%)", width:"100%", maxWidth:520, background:"rgba(251,245,237,0.95)", backdropFilter:"blur(8px)", padding:"12px 16px 20px", display:"flex", gap:10, borderTop:"1px solid #EDE0D4" },
+        btnBack:     { flex:1, padding:"13px 0", borderRadius:12, border:"2px solid #D5C4B5", background:"transparent", color:"#6B4C3B", fontSize:15, fontWeight:600, cursor:"pointer" },
+        btnNext:     { flex:2, padding:"13px 0", borderRadius:12, border:"none", background:"#8B4513", color:"#FFF8F0", fontSize:15, fontWeight:600, cursor:"pointer", boxShadow:"0 4px 14px rgba(139,69,19,0.3)" },
+        textarea:    { width:"100%", minHeight:72, border:"2px solid #EDE0D4", borderRadius:12, padding:"12px 14px", fontSize:14, color:"#1E0A04", background:"#FFFFFF", resize:"vertical", fontFamily:"'DM Sans',sans-serif", outline:"none", boxSizing:"border-box" },
+        summaryBox:  { background:"#FFFFFF", border:"2px solid #EDE0D4", borderRadius:16, padding:"20px 18px", marginBottom:14 },
+        summaryRow:  { display:"flex", justifyContent:"space-between", alignItems:"flex-start", padding:"10px 0", borderBottom:"1px solid #F5EDE4", gap:8 },
+        summaryLabel:{ fontSize:12, color:"#8A6550", fontWeight:500, flexShrink:0, paddingTop:2 },
+        summaryValue:{ fontSize:14, color:"#1E0A04", fontWeight:600, textAlign:"right" },
+        copyBtn:     { width:"100%", padding:"14px 0", borderRadius:12, border:"none", background:copied?"#2E7D32":"#8B4513", color:"#FFF", fontSize:15, fontWeight:600, cursor:"pointer", transition:"background 0.3s", boxShadow:"0 4px 14px rgba(139,69,19,0.25)" },
+        bigEmoji:    { fontSize:48, marginBottom:8, display:"block" },
+        welcomeTitle:{ fontFamily:"'Cormorant Garamond',serif", fontSize:34, fontWeight:700, color:"#1E0A04", lineHeight:1.1, marginBottom:10 },
+        welcomeText: { fontSize:14, color:"#6B4C3B", lineHeight:1.7 },
+        tag:         { display:"inline-block", background:"#FFF0E0", border:"1px solid #DEC5A8", color:"#8B4513", fontSize:11, fontWeight:600, padding:"2px 8px", borderRadius:20, marginRight:4, marginBottom:4 },
+      };
+
+      const renderOption = (o, key, type) => {
+        const sel = isSelected(key, o.id);
+        return (
+          <div key={o.id} style={s.card(sel)} onClick={() => togglePick(key, o.id, type)}>
+            <div style={s.cardRow}>
+              <div style={type === "single" ? s.radio(sel) : s.checkbox(sel)}>
+                {sel && <span style={s.checkmark}>{type === "single" ? "●" : "✓"}</span>}
+              </div>
+              <div style={{flex:1}}>
+                <div style={s.cardName}>{o.name}</div>
+                <div style={s.cardTag}>{o.tag}</div>
+                <div style={s.cardNote}>{o.note}</div>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      return (
+        <div style={s.app}>
+          <div style={s.inner}>
+            <div style={s.progressBar}><div style={s.progressFill} /></div>
+
+            {stepKey === "welcome" && (
+              <div style={{...s.content, paddingTop:40, textAlign:"center"}}>
+                <span style={s.bigEmoji}>🥃</span>
+                <div style={s.welcomeTitle}>Kevin — Aged to Perfection</div>
+                <p style={s.welcomeText}>
+                  Louisville, KY · June 11–14, 2026<br/><br/>
+                  The crew is locking in the details and a few decisions are yours to make, birthday boy.<br/><br/>
+                  This should take about <strong>2 minutes</strong>. Pick your preferences and we'll handle the rest.
+                </p>
+                <div style={{marginTop:16, marginBottom:80}}>
+                  {["5 meal picks","Activities","Cook-in requests"].map(t => <span key={t} style={s.tag}>{t}</span>)}
+                </div>
+              </div>
+            )}
+
+            {current && stepKey !== "summary" && (
+              <div style={s.content}>
+                <div style={s.header}>
+                  <div style={s.dateChip}>{current.date}  {current.emoji}</div>
+                  <div style={s.title}>{current.title}</div>
+                  <div style={s.subtitle}>{current.subtitle}</div>
+                </div>
+                {current.type === "single" && current.options.map(o => renderOption(o, stepKey, "single"))}
+                {current.type === "multi" && current.groups.map(g => (
+                  <div key={g.label}>
+                    <div style={s.groupLabel}>{g.label}</div>
+                    {g.options.map(o => renderOption(o, stepKey, "multi"))}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {stepKey === "cookin" && (
+              <div style={s.content}>
+                <div style={s.header}>
+                  <div style={s.dateChip}>Cook-In Meals  🏠</div>
+                  <div style={s.title}>Food Preferences</div>
+                  <div style={s.subtitle}>A few meals are at the house — let us know what you're craving or leave blank if you're easy</div>
+                </div>
+                {COOKIN.map(m => (
+                  <div key={m.id} style={{marginBottom:20}}>
+                    <div style={{fontSize:14, fontWeight:600, color:"#1E0A04", marginBottom:6}}>{m.label}</div>
+                    <textarea style={s.textarea} placeholder={m.hint} value={cookin[m.id]||""} onChange={e => setCookin(prev => ({...prev, [m.id]:e.target.value}))} />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {stepKey === "summary" && (
+              <div style={s.content}>
+                <div style={s.header}>
+                  <span style={{...s.bigEmoji, marginTop:20, display:"block"}}>🎉</span>
+                  <div style={s.title}>That's a wrap, Kevin!</div>
+                  <div style={s.subtitle}>Here's a summary of your picks. Copy and send it to the group chat.</div>
+                </div>
+                <div style={s.summaryBox}>
+                  {[["June 11 Dinner","dinner11"],["June 13 Breakfast","breakfast13"],["June 13 Activities","activities13"],["June 13 Birthday Dinner","dinner13"],["June 14 Breakfast","breakfast14"]].map(([label,key]) => {
+                    const v = picks[key]; let display = "—";
+                    if (v) {
+                      if (Array.isArray(v) && v.length) { const all = DATA[key].groups.flatMap(g=>g.options); display = v.map(id=>all.find(o=>o.id===id)?.name).filter(Boolean).join(", "); }
+                      else if (!Array.isArray(v)) { display = DATA[key].options.find(o=>o.id===v)?.name||v; }
+                    }
+                    return (<div key={key} style={s.summaryRow}><div style={s.summaryLabel}>{label}</div><div style={s.summaryValue}>{display}</div></div>);
+                  })}
+                  {COOKIN.map(m => (
+                    <div key={m.id} style={{...s.summaryRow, borderBottom:"none"}}>
+                      <div style={s.summaryLabel}>{m.label}</div>
+                      <div style={s.summaryValue}>{cookin[m.id]||"No preference"}</div>
+                    </div>
+                  ))}
+                </div>
+                <button style={s.copyBtn} onClick={copySummary}>{copied ? "✓ Copied!" : "Copy Summary"}</button>
+              </div>
+            )}
+
+            <div style={s.nav}>
+              {step > 0 && <button style={s.btnBack} onClick={() => navigate(-1)}>← Back</button>}
+              {stepKey !== "summary" && (
+                <button style={{...s.btnNext, flex: step===0?1:2}} onClick={() => navigate(1)}>
+                  {stepKey==="cookin" ? "See My Picks →" : step===0 ? "Let's Go →" : "Next →"}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
